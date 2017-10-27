@@ -15,13 +15,18 @@ $ ./tuning_guide.sh [ all | prompt | mem | disk | innodb | misc ]
 ## Modes
 ```shell
 all :    perform all checks (default)                          
+
 prompt : prompt for login credintials and socket              
          and execution mode                                  
+
 mem :    run checks for tunable options which               
          effect memory usage                               
+
 disk :   run checks for options which effect              
          i/o performance or file handle limits           
+
 innodb : run InnoDB checks /* to be improved */         
+
 misc :   run checks for that don't categorise          
          well Slow Queries, Binary logs,              
          Used Connections and Worker Threads
