@@ -188,7 +188,7 @@ print_banner ()
 {
     cecho " -- MYSQL PERFORMANCE TUNING PRIMER Colon Ver --" boldblue
     cecho "          - By: Matthew Montgomery -" black
-    cecho "          - By: tescom             -" black
+    cecho "          - By: tescom             -" yellow
 }
 
 ## -- Find the location of the mysql.sock file -- ##
