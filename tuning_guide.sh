@@ -202,12 +202,6 @@ check_for_socket ()
         cnf_socket="$($bin_mysql --print-defaults | $bin_grep -o "socket=[^[:space:]]*" | $bin_awk -F \= '{ print $2 }')"
         if [ -S "$cnf_socket" ] ; then
             socket="$cnf_socket"
-        elif [ -S "/var/lib/mysql/mysql.sock" ] ; then
-            socket="/var/lib/mysql/mysql.sock"
-        elif [ -S "/var/run/mysqld/mysqld.sock" ] ; then
-            socket="/var/run/mysqld/mysqld.sock"
-        elif [ -S "/tmp/mysql.sock" ] ; then
-            socket="/tmp/mysql.sock"
         else
             if [ -S "$ps_socket" ] ; then
                 socket="$ps_socket"
