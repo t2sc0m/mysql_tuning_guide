@@ -47,7 +47,7 @@
 ################################################################################
 socket=
 
-
+## -- set ansi color name -- ##
 export black='\033[0m'
 export boldblack='\033[1;0m'
 export red='\033[31m'
@@ -65,7 +65,7 @@ export boldcyan='\033[1;36m'
 export white='\033[37m'
 export boldwhite='\033[1;37m'
 
-
+## -- set command path -- ##
 for bin in awk bc du find grep head ls mysql mysqladmin netstat sleep sysctl tput uname ; do
     which "$bin" > /dev/null
     if [ "$?" = "0" ] ; then
@@ -78,8 +78,8 @@ for bin in awk bc du find grep head ls mysql mysqladmin netstat sleep sysctl tpu
 done
 
 
+## -- set function to easily print colored test -- ##
 cecho ()
-## -- Function to easliy print colored text -- ##
 {
     local var1="$1" # message
     local var2="$2" # color
@@ -133,7 +133,6 @@ cecho ()
 
 
 cechon ()
-## -- Function to easliy print colored text -- ##
 {
     local var1="$1" # message
     local var2="$2" # color
@@ -185,18 +184,15 @@ cechon ()
     return
 }
 
-
 print_banner ()
-## -- Banner -- ##
 {
-    cecho " -- MYSQL PERFORMANCE TUNING PRIMER colon.ver --" boldblue
+    cecho " -- MYSQL PERFORMANCE TUNING PRIMER Colon Ver --" boldblue
     cecho "          - By: Matthew Montgomery -" black
     cecho "          - By: tescom             -" black
 }
 
-
-check_for_socket ()
 ## -- Find the location of the mysql.sock file -- ##
+check_for_socket ()
 {
     if [ -z "$socket" ] ; then
         cnf_socket="$($bin_mysql --print-defaults | $bin_grep -o "socket=[^[:space:]]*" | $bin_awk -F \= '{ print $2 }')"
@@ -222,9 +218,8 @@ check_for_socket ()
     fi
 }
 
-
-check_mysql_login ()
 ## -- Test for running mysql -- ##
+check_mysql_login ()
 {
     is_up="$($cmd_mysqladmin ping 2>&1)"
     if [ "$is_up" = "mysqld is alive" ] ; then
@@ -246,7 +241,6 @@ check_mysql_login ()
 
 
 final_login_attempt ()
-## --    -- ##
 {
     is_up="$($cmd_mysqladmin ping 2>&1)"
     if [ "$is_up" = "mysqld is alive" ] ; then
@@ -258,9 +252,8 @@ final_login_attempt ()
     fi
 }
 
-
-second_login_failed ()
 ## -- create a ~/.my.cnf and exit when all else fails -- ##
+second_login_failed ()
 {
     cecho "Could not auto detect login info!"
     cecho "Found potential sockets: $found_socks"
@@ -268,14 +261,14 @@ second_login_failed ()
 
     read -p "Would you like to provide a different socket? [y/N] : " REPLY
     case "$REPLY" in
-        yes | y | Y | YES)
+        y )
             read -p "Socket: " socket
         ;;
     esac
 
     read -p "Do you have your login handy? [y/N] : " REPLY
     case "$REPLY" in
-        yes | y | Y | YES)
+        y )
             answer1="yes"
             read -p "User: " user
             read -rp "Password: " pass
@@ -296,7 +289,7 @@ second_login_failed ()
 
     read -p "Would you like me to create a ~/.my.cnf file for you? [y/N] : " REPLY
     case "$REPLY" in
-        yes | y | Y | YES)
+        y )
             answer2="yes"
             if [ ! -f "~/.my.cnf" ] ; then
                 umask 077
@@ -326,7 +319,7 @@ second_login_failed ()
                 fi
             fi
         ;;
-        *)
+        * )
             if [ "$answer1" != "yes" ] ; then
                 exit 1
             else
@@ -337,9 +330,8 @@ second_login_failed ()
     esac
 }
 
-
-mysql_status ()
 ## -- Function to pull MySQL status variable -- ##
+mysql_status ()
 {
     local var1="$1"
     local var2="$2"
@@ -349,9 +341,8 @@ mysql_status ()
     export "$var2"="$status"
 }
 
-
-mysql_variable ()
 ## -- Function to pull MySQL server runtime variable -- ##
+mysql_variable ()
 {
     local var1="$1"
     local var2="$2"
@@ -361,9 +352,8 @@ mysql_variable ()
     export "$var2"="$variable"
 }
 
-
-mysql_variableTSV ()
 ## -- Function to pull MySQL server runtime variable -- ##
+mysql_variableTSV ()
 {
     local var1="$1"
     local var2="$2"
@@ -373,9 +363,8 @@ mysql_variableTSV ()
     export "$var2"="$variable"
 }
 
-
-float2int ()
 ## -- Convert floating point to integer -- ##
+float2int ()
 {
     local var1="$1"
     local var2="$2"
@@ -385,9 +374,8 @@ float2int ()
     export "$var2"="$variable"
 }
 
-
-divide ()
 ## -- Divide two intigers -- ##
+divide ()
 {
     local var1="$1"
     local var2="$2"
@@ -431,9 +419,8 @@ divide ()
     export "$var3"="$(echo "scale=$scale ; $dividend / $divisor" | $bin_bc -l)"
 }
 
-
-human_readable ()
 ## -- Make sizes human readable -- ##
+human_readable ()
 {
     local var1="$1"
     local var2="$2"
@@ -465,9 +452,8 @@ human_readable ()
     fi
 }
 
-
-human_readable_time ()
 ## -- Make times human readable -- ##
+human_readable_time ()
 {
     local var1="$1"
     local var2="$2"
@@ -489,9 +475,8 @@ human_readable_time ()
     export "$var2"="$days days $hours hrs $minutes min $seconds sec"
 }
 
-
-check_mysql_version ()
 ## -- Print Version Info -- ##
+check_mysql_version ()
 {
     mysql_variable \'version\' mysql_version
     mysql_variable \'version_compile_machine\' mysql_version_compile_machine
@@ -499,9 +484,8 @@ check_mysql_version ()
     cecho "MySQL Version $mysql_version $mysql_version_compile_machine"
 }
 
-
-post_uptime_warning ()
 ## -- Warn if uptime not long enough -- ##
+post_uptime_warning ()
 {
     mysql_status \'Uptime\' uptime
     mysql_status \'Threads_connected\' threads
@@ -532,9 +516,8 @@ post_uptime_warning ()
     cecho "for info about MySQL's Enterprise Monitoring and Advisory Service" boldblue
 }
 
-
-check_slow_queries ()
 ## -- Slow Queries -- ##
+check_slow_queries ()
 {
     cecho "SLOW QUERIES" boldblue
 
@@ -573,9 +556,8 @@ check_slow_queries ()
     fi
 }
 
-
+## -- Check Binary Log -- ##
 check_binary_log ()
-## -- Binary Log -- ##
 {
     cecho "BINARY UPDATE LOG" boldblue
 
@@ -609,9 +591,8 @@ check_binary_log ()
     fi
 }
 
-
+## -- Check Used Connections -- ##
 check_used_connections ()
-## -- Used Connections -- ##
 {
     mysql_status \'Max_used_connections\' max_used_connections
     mysql_status \'Threads_connected\' threads_connected
@@ -649,9 +630,8 @@ check_used_connections ()
     unset txt_color
 }
 
-
+## -- Check Worker Threads -- ##
 check_threads ()
-## -- Worker Threads -- ##
 {
     cecho "WORKER THREADS" boldblue
 
@@ -682,9 +662,8 @@ check_threads ()
     fi
 }
 
-
+## -- Check Key buffer Size -- ##
 check_key_buffer_size ()
-## -- Key buffer Size -- ##
 {
     cecho "KEY BUFFER" boldblue
 
@@ -744,9 +723,8 @@ check_key_buffer_size ()
     fi
 }
 
-
+## -- Check Query Cache -- ##
 check_query_cache ()
-## -- Query Cache -- ##
 {
     cecho "QUERY CACHE" boldblue
 
@@ -801,9 +779,8 @@ check_query_cache ()
     fi
 }
 
-
+## -- Check Sort Operations -- ##
 check_sort_operations ()
-## -- Sort Operations -- ##
 {
     cecho "SORT OPERATIONS" boldblue
 
@@ -849,9 +826,8 @@ check_sort_operations ()
     fi
 }
 
-
+## -- Check Joins -- ##
 check_join_operations ()
-## -- Joins -- ##
 {
     cecho "JOINS" boldblue
 
@@ -900,9 +876,8 @@ check_join_operations ()
     # XXX Add better tests for join_buffer_size pending mysql bug #15088 XXX #
 }
 
-
+## -- Check Temp Tables -- ##
 check_tmp_tables ()
-## -- Temp Tables -- ##
 {
     cecho "TEMP TABLES" boldblue
 
@@ -937,9 +912,8 @@ check_tmp_tables ()
     fi
 }
 
-
+## -- Check Open Files Limit -- ##
 check_open_files ()
-## -- Open Files Limit -- ##
 {
     cecho "OPEN FILES LIMIT" boldblue
 
@@ -973,9 +947,8 @@ check_open_files ()
     fi
 }
 
-
+## -- Check Table Cache -- ##
 check_table_cache ()
-## -- Table Cache -- ##
 {
     cecho "TABLE CACHE" boldblue
 
@@ -1041,9 +1014,8 @@ check_table_cache ()
     fi
 }
 
-
+## -- Check Table Locking -- ##
 check_table_locking ()
-## -- Table Locking -- ##
 {
     cecho "TABLE LOCKING" boldblue
 
@@ -1081,9 +1053,8 @@ check_table_locking ()
     fi
 }
 
-
+## -- Check Table Scans -- ##
 check_table_scans ()
-## -- Table Scans -- ##
 {
     cecho "TABLE SCANS" boldblue
 
@@ -1114,9 +1085,8 @@ check_table_scans ()
     fi
 }
 
-
+## -- Check InnoDB Status -- ##
 check_innodb_status ()
-## -- InnoDB -- ##
 {
     ## See http://bugs.mysql.com/59393
 
@@ -1157,6 +1127,13 @@ check_innodb_status ()
             innodb_enabled="0"
         else
             innodb_enabled="1"
+        fi
+    elif [ "$major_version" = '10.0' ] || [ "$major_version" = '10.1' ] ; then
+    mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+        if [ "$ignore_builtin_innodb" = "ON" ] ; then
+            innodb_enabled=0
+        else
+            innodb_enabled=1
         fi
     fi
     if [ $((innodb_enabled == 1)) -ne 0 ] ; then
@@ -1202,9 +1179,8 @@ check_innodb_status ()
     fi
 }
 
-
-total_memory_used ()
 ## -- Total Memory Usage -- ##
+total_memory_used ()
 {
     cecho "MEMORY USAGE" boldblue
 
@@ -1297,7 +1273,6 @@ total_memory_used ()
 
 
 login_validation ()
-## --    -- ##
 {
     check_for_socket
     check_mysql_login
@@ -1305,7 +1280,6 @@ login_validation ()
 
 
 shared_info ()
-## --    -- ##
 {
     mysql_status \'Questions\' questions
     socket_owner="$($bin_ls -lnH $socket | $bin_awk '{ print $3 }')"
@@ -1319,7 +1293,6 @@ shared_info ()
 
 
 get_system_info ()
-## --    -- ##
 {
     export OS="$($bin_uname)"
 
@@ -1356,7 +1329,6 @@ get_system_info ()
 
 
 banner_info ()
-## --    -- ##
 {
     shared_info
     print_banner            ; cecho " "
@@ -1366,7 +1338,6 @@ banner_info ()
 
 
 misc ()
-## --    -- ##
 {
     shared_info
     check_slow_queries      ; cecho " "
@@ -1378,7 +1349,6 @@ misc ()
 
 
 memory ()
-## --    -- ##
 {
     shared_info
     total_memory_used       ; cecho " "
@@ -1390,7 +1360,6 @@ memory ()
 
 
 file ()
-## --    -- ##
 {
     shared_info
     check_open_files        ; cecho " "
@@ -1402,7 +1371,6 @@ file ()
 
 
 all ()
-## --    -- ##
 {
     banner_info
     misc
@@ -1412,7 +1380,6 @@ all ()
 
 
 prompt ()
-## --    -- ##
 {
     prompted="true"
     read -p "Username [anonymous] : " user
@@ -1469,7 +1436,6 @@ prompt ()
 
 
 main ()
-## --    -- ##
 {
     local var1="$1"
 
