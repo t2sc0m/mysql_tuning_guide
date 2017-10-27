@@ -189,7 +189,7 @@ cechon ()
 print_banner ()
 ## -- Banner -- ##
 {
-    cecho " -- MYSQL PERFORMANCE TUNING PRIMER 2.0.1-r1 --" boldblue
+    cecho " -- MYSQL PERFORMANCE TUNING PRIMER colon.ver --" boldblue
     cecho "          - By: Matthew Montgomery -" black
     cecho "          - By: tescom             -" black
 }
