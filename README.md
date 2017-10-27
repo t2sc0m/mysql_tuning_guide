@@ -9,7 +9,7 @@ Based on the [MySQL performance tuning primer script](https://launchpad.net/mysq
 ---
 ## Usage
 ```shell
-$ ./tuning_guide.sh [all|prompt|mem|disk|innodb|misc]
+$ ./tuning_guide.sh [ all | prompt | mem | disk | innodb | misc ]
 
 ```  
 ## Modes
